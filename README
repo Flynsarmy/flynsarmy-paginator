@@ -1,6 +1,11 @@
 Adds floating (ranged) pagination support to django-paginator.
 See http://www.flynsarmy.com/2011/06/floating-page-numbers-in-django for more details.
 
+This app is a simple subclass of django’s built in Paginator and Page classes. The only changes I’ve made are to add an optional adjacent_pages parameter to FlynsarmyPaginator and a .page_range_data variable to the FlynsarmyPage object with the following contents:
+page_range – same as Paginator.page_range – a list of page numbers but only showing a subset of pages if adjacent_pages was specified in the FlynsarmyPaginator constructor.
+show_first – Boolean value set to True if ’1′ isn’t present in the page_range list above.
+show_last – Boolean vlaue set to True if the last page isn’t present in the page_range list above.
+
 Usage
 
 Add to your INSTALLED_APPS in settings.py:
