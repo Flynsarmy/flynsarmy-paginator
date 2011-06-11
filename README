@@ -1,3 +1,6 @@
+Adds floating (ranged) pagination support to django-paginator.
+See http://www.flynsarmy.com/2011/06/floating-page-numbers-in-django for more details.
+
 Usage
 
 Add to your INSTALLED_APPS in settings.py:
