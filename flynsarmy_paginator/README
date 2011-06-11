@@ -1,0 +1,72 @@
+Usage
+
+Add to your INSTALLED_APPS in settings.py:
+
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    ...,
+    'flynsarmy_paginator',
+)
+
+
+
+An example view (taken mostly from the docs)
+
+from django.core.paginator import EmptyPage, PageNotAnInteger
+from flynsarmy_paginator.paginator import FlynsarmyPaginator
+
+def listing(request):
+    contact_list = Contacts.objects.all()
+    paginator = Paginator(contact_list, 25, adjacent_objects=6) # Show 25 contacts per page
+
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
+
+    return render_to_response('list.html', {"contacts": contacts})
+
+
+
+
+and template:
+
+{% for contact in contacts %}
+	{# Each "contact" is a Contact model object. #}
+	{{ contact.full_name|upper }}<br />
+	...
+{% endfor %}
+ 
+<div class="pagination">
+	<span class="step-links">
+		{% if contacts.has_previous %}
+			<a href="?page={{ contacts.previous_page_number }}">previous</a>
+		{% endif %}
+ 
+		{% if contacts.page_range_data.show_first %}
+			<a href="?page=1">1</a>
+			<span class="ellipsis">...</span>
+		{% endif %}
+		{% for i in contacts.page_range_data.page_range %}
+			{% ifequal i contacts.number %}
+				{{ i }}
+			{% else %}
+				<a href="?page={{ i }}">{{ i }}</a>
+			{% endifequal %}
+		{% endfor %}
+		{% if contacts.page_range_data.show_last %}
+			<span class="ellipsis">...</span>
+			<a href="?page={{ contacts.paginator.num_pages }}">{{ contacts.paginator.num_pages }}</a>
+		{% endif %}
+ 
+		{% if contacts.has_next %}
+			<a href="?page={{ contacts.next_page_number }}">next</a>
+		{% endif %}
+	</span>
+</div>
